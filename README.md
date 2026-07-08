@@ -16,12 +16,12 @@ healthy while minority-language users fail far more queries.
 The dashboard fetches the CSV at runtime, so it must be served over HTTP
 (browsers block `fetch` from `file://`).
 
-**Option A — Live Server extension (recommended)**
+**Option A - Live Server extension (recommended)**
 1. Open this folder in VS Code.
 2. Install the "Live Server" extension if you don't have it.
 3. Right-click `index.html` → **Open with Live Server**.
 
-**Option B — any static server**
+**Option B - any static server**
 ```bash
 python3 -m http.server 8000
 # then open http://localhost:8000
@@ -67,9 +67,9 @@ switch pronunciation.
 | PapaParse | 5.4.1 | MIT | CSV parsing / dataset binding |
 | Chart.js | 4.4.1 | MIT | Bar & line charts |
 | Leaflet | 1.9.4 | BSD-2-Clause | District map |
-| OpenStreetMap tiles | — | ODbL (attribution shown on map) | Base map |
+| OpenStreetMap tiles | - | ODbL (attribution shown on map) | Base map |
 | Bricolage Grotesque | Google Fonts | OFL 1.1 | Display type |
 | Instrument Sans | Google Fonts | OFL 1.1 | Body type |
-| Dataset 06 | — | Programme-provided, challenge use only | All data |
+| Dataset 06 | - | Programme-provided, challenge use only | All data |
 
 No other third-party code, imagery, or icons are used.
