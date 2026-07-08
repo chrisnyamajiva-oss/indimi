@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Indimi — Local language &amp; accessibility insight tool</title>
+<meta name="description" content="A decision-support dashboard revealing language equity gaps in Zimbabwe's digital public services. POTRAZ AI4I 2026 Design Track prototype. Synthetic sample data." />
+
+<link rel="stylesheet" href="vendor/fonts/fonts.css" />
+<link rel="stylesheet" href="vendor/leaflet.css" />
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-i18n="skip">Skip to main content</a>
+
+<header class="site-header">
+  <div class="bar">
+    <a class="brand" href="#top">Indimi<span class="dot">.</span></a>
+    <nav class="lang-switch" aria-label="Language / Mutauro / Ulimi">
+      <button type="button" data-lang="en" aria-pressed="true" lang="en">EN</button>
+      <button type="button" data-lang="sn" aria-pressed="false" lang="sn">SN</button>
+      <button type="button" data-lang="nd" aria-pressed="false" lang="nd">ND</button>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ============ HERO ============ -->
+  <div class="hero wrap" id="top">
+    <p class="eyebrow"><span data-i18n="app.subtitle">Local language and accessibility insight tool</span></p>
+    <h1 data-i18n="hero.title">The national average hides the gap</h1>
+    <p class="lede" data-i18n="hero.lede"></p>
+    <p><span class="data-badge" data-i18n="badge.synthetic">Synthetic sample data — not official statistics</span></p>
+
+    <div id="load-state" class="load-state" data-i18n="load.loading">Loading dataset…</div>
+
+    <div id="gapstrip" class="gapstrip" role="img" aria-label="Query success rate by language against the national average" hidden-until-load>
+      <div class="track" id="gapstrip-track" aria-hidden="true"></div>
+      <div class="axis" aria-hidden="true">
+        <span data-i18n="hero.axis.low">50% success</span>
+        <span data-i18n="hero.axis.high">90% success</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="app" hidden>
+
+  <!-- ============ 1. OVERVIEW ============ -->
+  <section class="section" aria-labelledby="s1-title">
+    <div class="wrap">
+      <p class="eyebrow"><span class="num" aria-hidden="true">1</span><span data-i18n="s1.eyebrow">Overview</span></p>
+      <h2 id="s1-title" data-i18n="s1.title">How inclusive are digital public services right now?</h2>
+      <div class="kpis">
+        <div class="kpi"><span class="label" data-i18n="kpi.interactions">Total interactions</span><span class="value" id="kpi-interactions">–</span></div>
+        <div class="kpi"><span class="label" data-i18n="kpi.success">Query success rate</span><span class="value" id="kpi-success">–</span></div>
+        <div class="kpi"><span class="label" data-i18n="kpi.unresolved">Est. unresolved queries</span><span class="value" id="kpi-unresolved">–</span><span class="note" data-i18n="kpi.unresolved.note">Derived: interactions × unresolved-query rate</span></div>
+        <div class="kpi"><span class="label" data-i18n="kpi.issues">Accessibility issues reported</span><span class="value" id="kpi-issues">–</span></div>
+        <div class="kpi alert"><span class="label" data-i18n="kpi.gap">Language equity gap</span><span class="value" id="kpi-gap">–</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2. EXPLORE ============ -->
+  <section class="section" aria-labelledby="s2-title">
+    <div class="wrap">
+      <p class="eyebrow"><span class="num" aria-hidden="true">2</span><span data-i18n="s2.eyebrow">Explore the data</span></p>
+      <h2 id="s2-title" data-i18n="s2.title">Filter by language, place, channel and time</h2>
+
+      <form class="filters" aria-label="Data filters" onsubmit="return false;">
+        <div><label for="f-month-from" data-i18n="f.month.from">From month</label><select id="f-month-from"></select></div>
+        <div><label for="f-month-to" data-i18n="f.month.to">To month</label><select id="f-month-to"></select></div>
+        <div><label for="f-province" data-i18n="f.province">Province</label><select id="f-province"></select></div>
+        <div><label for="f-district" data-i18n="f.district">District</label><select id="f-district"></select></div>
+        <div><label for="f-language" data-i18n="f.language">Language of service</label><select id="f-language"></select></div>
+        <div><label for="f-channel" data-i18n="f.channel">Channel</label><select id="f-channel"></select></div>
+        <div><label for="f-content" data-i18n="f.content">Content type</label><select id="f-content"></select></div>
+        <div><label for="f-settlement" data-i18n="f.settlement">Settlement type</label><select id="f-settlement"></select></div>
+        <button type="button" id="f-reset" data-i18n="f.reset">Reset filters</button>
+      </form>
+      <p class="filter-status" id="filter-status" aria-live="polite"></p>
+      <div id="empty-note" class="empty-note" role="status" hidden>
+        <strong data-i18n="empty.title">No records match these filters.</strong>
+        <span data-i18n="empty.text">Broaden the selection or press “Reset filters”.</span>
+      </div>
+
+      <div class="grid-2">
+        <div class="panel">
+          <h3 data-i18n="c.lang.title">Query success by language</h3>
+          <div class="legend">
+            <span class="key"><span class="swatch" style="background:#0b5a44"></span><span data-i18n="legend.above">At or above national average</span></span>
+            <span class="key"><span class="swatch" style="background:#a0341a"></span><span data-i18n="legend.below">Below national average</span></span>
+          </div>
+          <div class="chart-box"><canvas id="chart-lang" role="img" aria-label="Query success by language"></canvas></div>
+          <details class="table-alt"><summary data-i18n="c.table.show">Show this chart as a data table</summary><div id="table-lang"></div></details>
+        </div>
+
+        <div class="panel">
+          <h3 data-i18n="c.trend.title">Monthly success trend</h3>
+          <div class="legend" id="legend-trend"></div>
+          <div class="chart-box"><canvas id="chart-trend" role="img" aria-label="Monthly success trend"></canvas></div>
+          <details class="table-alt"><summary data-i18n="c.table.show">Show this chart as a data table</summary><div id="table-trend"></div></details>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:20px;">
+        <h3 data-i18n="c.heat.title">Success by language and channel</h3>
+        <div class="legend">
+          <span class="key"><span class="swatch" style="background:#e8f2ee; border:1px solid #084535"></span><span data-i18n="heat.legend.good">75%+ — strong</span></span>
+          <span class="key"><span class="swatch" style="background:#fbf3e0; border:1px solid #6f4a05"></span><span data-i18n="heat.legend.mid">65–74% — needs attention</span></span>
+          <span class="key"><span class="swatch" style="background:#fbeeea; border:1px solid #a0341a"></span><span data-i18n="heat.legend.bad">Below 65% — weak</span></span>
+        </div>
+        <div class="heat" id="heatmap"></div>
+      </div>
+
+      <div class="panel">
+        <h3 data-i18n="c.map.title">District map</h3>
+        <div id="map" role="application" aria-label="Interactive map of districts. A table alternative follows."></div>
+        <p class="map-note" data-i18n="c.map.note"></p>
+        <details class="table-alt"><summary data-i18n="c.table.show">Show this chart as a data table</summary><div id="table-map"></div></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. KEY INSIGHTS ============ -->
+  <section class="section" aria-labelledby="s3-title">
+    <div class="wrap">
+      <p class="eyebrow"><span class="num" aria-hidden="true">3</span><span data-i18n="s3.eyebrow">Key insights</span></p>
+      <h2 id="s3-title" data-i18n="s3.title">What the data says</h2>
+      <div class="cards" id="insight-cards"></div>
+
+      <div class="row-between" style="margin-top:2rem;">
+        <h3 style="margin:0;" data-i18n="ins.hotspots.title">Priority hotspots — worst district and language combinations</h3>
+        <button type="button" id="btn-export" class="btn-secondary" data-i18n="btn.export">Download hotspots (CSV)</button>
+      </div>
+      <details class="table-alt" open><summary class="sr-only" data-i18n="c.table.show">Show this chart as a data table</summary><div id="table-hotspots"></div></details>
+    </div>
+  </section>
+
+  <!-- ============ 4. RECOMMENDED ACTIONS ============ -->
+  <section class="section" aria-labelledby="s4-title">
+    <div class="wrap">
+      <p class="eyebrow"><span class="num" aria-hidden="true">4</span><span data-i18n="s4.eyebrow">Recommended actions</span></p>
+      <h2 id="s4-title" data-i18n="s4.title">Where to intervene first</h2>
+      <p data-i18n="s4.lede"></p>
+      <ol class="actions" id="action-list"></ol>
+      <p style="margin-top:1.25rem;"><button type="button" id="btn-copy" class="btn-secondary" data-i18n="btn.copy">Copy briefing summary</button></p>
+      <p class="filter-status" id="copy-status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  </div><!-- /#app -->
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p data-i18n="footer.about"></p>
+  </div>
+</footer>
+
+<script src="vendor/papaparse.min.js"></script>
+<script src="vendor/chart.umd.js"></script>
+<script src="vendor/leaflet.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
