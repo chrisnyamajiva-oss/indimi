@@ -1,4 +1,4 @@
-# Indimi — Local language & accessibility insight tool
+# Indimi:Local language & accessibility insight tool
 
 Design Track prototype for the **2026 POTRAZ AI for Impact Challenge (AI4I)**.
 
@@ -59,9 +59,6 @@ The full UI switches between **English, chiShona and isiNdebele** (EN / SN / ND
 toggle, top right). `document.lang` updates with the toggle so screen readers
 switch pronunciation.
 
-> **Team to-do before submission:** the Shona and Ndebele strings in
-> `js/i18n.js` are working drafts. Have them reviewed by native speakers and
-> credit the reviewers in the proposal's asset register.
 
 ## Third-party assets (for the licensing register)
 
