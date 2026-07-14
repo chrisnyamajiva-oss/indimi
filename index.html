@@ -9,6 +9,28 @@
 <link rel="stylesheet" href="vendor/fonts/fonts.css" />
 <link rel="stylesheet" href="vendor/leaflet.css" />
 <link rel="stylesheet" href="css/styles.css" />
+<script>
+/* On-screen error catcher (diagnostic). Prints any startup error to the page
+   so failures are visible on devices without dev tools. */
+(function () {
+  function show(msg) {
+    var d = document.getElementById("err-catcher");
+    if (!d) {
+      d = document.createElement("div");
+      d.id = "err-catcher";
+      d.style.cssText = "position:fixed;left:0;right:0;bottom:0;z-index:9999;background:#a0341a;color:#fff;font:13px/1.4 monospace;padding:12px 16px;white-space:pre-wrap;word-break:break-word;max-height:50vh;overflow:auto;";
+      (document.body || document.documentElement).appendChild(d);
+    }
+    d.textContent += msg + "\n";
+  }
+  window.addEventListener("error", function (e) {
+    show("JS ERROR: " + (e.message || e.error) + "\n  at " + (e.filename || "?").split("/").pop() + ":" + e.lineno + ":" + e.colno);
+  });
+  window.addEventListener("unhandledrejection", function (e) {
+    show("PROMISE REJECTED: " + (e.reason && e.reason.message ? e.reason.message : e.reason));
+  });
+})();
+</script>
 </head>
 <body>
 
